@@ -52,7 +52,7 @@ To run this code sample, the following are required.
 5. Outlook for Web will open in a browser window. In Outlook, click **New** to create a new email message. 
 6. Below the compose form is a tool bar with buttons for **Send**, **Discard**, and other utilities. Near the far right end of this toolbar, near to the right end of the window, is the icon for this add-in. 
 
-   ![Icon for Insert Files Add-in](Office-Add-in-Microsoft-Graph-ASPNETWeb/Content/Onedrive_Charts_icon_16x16px.png)
+   ![Icon for Insert Files Add-in](Outlook-Add-in-Microsoft-Graph-ASPNETWeb/Content/Onedrive_Charts_icon_16x16px.png)
 
 7. Click the icon to open the task pane add-in.
 
