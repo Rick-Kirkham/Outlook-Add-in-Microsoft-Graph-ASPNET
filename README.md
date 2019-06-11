@@ -1,17 +1,16 @@
-# Get Excel workbooks using Microsoft Graph and MSAL in an Office Add-in 
+# Get Excel workbooks using Microsoft Graph and MSAL in an Outlook Add-in 
 
-Learn how to build a Microsoft Office Add-in that connects to Microsoft Graph, finds the first three workbooks stored in OneDrive for Business, fetches their filenames, and inserts the names into a range on an Excel worksheet using Office.js.
+Learn how to build a Microsoft Outlook Add-in that connects to Microsoft Graph, finds the first three workbooks stored in OneDrive for Business, fetches their filenames, and inserts the names into a new message compose form in Outlook.
 
 # Introduction
 
-Integrating data from online service providers increases the value and adoption of your add-ins. This code sample shows you how to connect your add-in to Microsoft Graph. Use this code sample to:
+Integrating data from online service providers increases the value and adoption of your add-ins. This code sample shows you how to connect your Outlook add-in to Microsoft Graph. Use this code sample to:
 
 * Connect to Microsoft Graph from an Office Add-in.
 * Use the MSAL .NET Library to implement the OAuth 2.0 authorization framework in an add-in.
 * Use the OneDrive REST APIs from Microsoft Graph.
 * Show a dialog using the Office UI namespace.
 * Build an Add-in using ASP.NET MVC, MSAL 3.x.x for .NET,  and Office.js. 
-* Use add-in commands in an add-in.
 
 
 ## Prerequisites
@@ -19,20 +18,20 @@ To run this code sample, the following are required.
 
 * Visual Studio 2019 or later.
 
-* SQL Server Express (No longer automatically installed with recent versions of Visual Studio.)
+* SQL Server Express (If it is not automatically installed with recent versions of Visual Studio.)
 
 * An Office 365 account which you can get by joining the [Office 365 Developer Program](https://aka.ms/devprogramsignup) that includes a free 1 year subscription to Office 365.
 
 * At least three Excel workbooks stored on OneDrive for Business in your Office 365 subscription.
 
-* Excel for Windows, version 16.0.6769.2001 or higher.
+* Optional, if you want to debug on the desktop instead of Outlook Online: Outlook for Windows, version 1809 or higher.
 * [Office Developer Tools](https://www.visualstudio.com/en-us/features/office-tools-vs.aspx)
 
 * A Microsoft Azure Tenant. This add-in requires Azure Active Directiory (AD). Azure AD provides identity services that applications use for authentication and authorization. A trial subscription can be acquired here: [Microsoft Azure](https://account.windowsazure.com/SignUp).
 
 ## Configure the project
 
-1. In **Visual Studio**, choose the **Office-Add-in-Microsoft-Graph-ASPNETWeb** project. In **Properties**, ensure **SSL Enabled** is **True**. Verify that the **SSL URL** uses the same domain name and port number as those listed in the next step.
+1. In **Visual Studio**, choose the **Outlook-Add-in-Microsoft-Graph-ASPNETWeb** project. In **Properties**, ensure **SSL Enabled** is **True**. Verify that the **SSL URL** uses the same domain name and port number as those listed in the next step.
  
 2. Register your application using the [Azure Management Portal](https://manage.windowsazure.com). **Log in with the identity of an administrator of your Office 365 tenancy to ensure that you are working in an Azure Active Directory that is associated with that tenancy.** To learn how to register your application, see [Register an application with the Microsoft Identity Platform](https://docs.microsoft.com/graph/auth-register-app-v2). Use the following settings:
 
@@ -47,21 +46,27 @@ To run this code sample, the following are required.
 
 ## Run the project
 1. Open the Visual Studio solution file. 
-2. Right-click **Office-Add-in-Microsoft-Graph-ASPNET**, and then choose **Set as StartUp Project**.
-2. Press F5. 
-3. In PowerPoint, choose **Insert** > **Open Files** in the **OneDrive Files** group to open the task pane add-in.
+2. Right-click **Outlook-Add-in-Microsoft-Graph-ASPNET** solution in **Solution Explorer** (not the project nodes), and then choose **Set startup projects**. Select the **Multiple startup projects** radio button. Make sure the project that ends with "Web" is listed first.
+3. On the **Build** menu, select **Clean Solution**. When it finishes, open the **Build** menu again and select **Build Solution**.
+4. Press F5. The first time you do this, you will be prompted to specify the email and password fo the Outlook for Web user that you will use for debugging the add-in. Use the credentials of an admin for your O365 tenancy.
+5. Outlook for Web will open in a browser window. In Outlook, click **New** to create a new email message. 
+6. Below the compose form is a tool bar with buttons for **Send**, **Discard**, and other utilities. Near the far right end of this toolbar, near to the right end of the window, is the icon for this add-in. 
+
+   ![Icon for Insert Files Add-in](Office-Add-in-Microsoft-Graph-ASPNETWeb/Content/Onedrive_Charts_icon_16x16px.png)
+
+7. Click the icon to open the task pane add-in.
 
 ## Known issues
 
 * The Fabric spinner control appears only briefly or not at all. 
 
-* After you logout in the task pane, you will briefly see, in the task pane, the standard AAD page that confirms that you have logged out and recommends that you close all browser windows. Usually, this lasts only a brief moment before you are redirected to the add-ins home page. Sometimes the redirection never happens and you must reload the add-in from the personality menu.
+* After you logout in the task pane, you will briefly see, in the task pane, and error page that says that it cannot be opened in an iFrame. This will be fixed. Just close the task pane by clicking the "X" in the upper right.
 
 * Scenario: When trying to run the code sample, the add-in will not load.
 	* Resolution: 
 		1. In Visual Studio, open **SQL Server Object Explorer**.
 		2. Expand **(localdb)\MSSQLLocalDB** > **Databases**.
-		3. Right click **Office-Add-in-Microsoft-Graph-ASPNET**, then choose **Delete**. 
+		3. Right click **Outlook-Add-in-Microsoft-Graph-ASPNET**, then choose **Delete**. 
 * Scenario: When you run the code sample, you get an error on the line *Office.context.ui.messageParent*.	
 	* Resolution: Stop running the code sample and restart it. 
 * If download the zip file, when you extract the files you get an error indicating that the file path is too long.
