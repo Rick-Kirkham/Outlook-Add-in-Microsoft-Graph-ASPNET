@@ -50,7 +50,7 @@ To run this code sample, the following are required.
 3. On the **Build** menu, select **Clean Solution**. When it finishes, open the **Build** menu again and select **Build Solution**.
 4. Press F5. The first time you do this, you will be prompted to specify the email and password fo the Outlook for Web user that you will use for debugging the add-in. Use the credentials of an admin for your O365 tenancy.
 5. Outlook for Web will open in a browser window. In Outlook, click **New** to create a new email message. 
-6. Below the compose form is a tool bar with buttons for **Send**, **Discard**, and other utilities. Near the far right end of this toolbar, near to the right end of the window, is the icon for this add-in. 
+6. Below the compose form is a tool bar with buttons for **Send**, **Discard**, and other utilities. If you are logged in with a Work or School account, the icon for the add-in is near the far right end of this tool bar, near to the right end of the window. If you are logged in with a Microsoft Account, the icon is on a drop down menu that opens when you click the **...* button on this tool bar.
 
    ![Icon for Insert Files Add-in](Outlook-Add-in-Microsoft-Graph-ASPNETWeb/Content/Onedrive_Charts_icon_16x16px.png)
 
