@@ -35,7 +35,8 @@ To run this code sample, the following are required.
  
 2. Register your application using the [Azure Management Portal](https://manage.windowsazure.com). **Log in with the identity of an administrator of your Office 365 tenancy to ensure that you are working in an Azure Active Directory that is associated with that tenancy.** To learn how to register your application, see [Register an application with the Microsoft Identity Platform](https://docs.microsoft.com/graph/auth-register-app-v2). Use the following settings:
 
- - REDIRCT URI: https://localhost:44301/AzureADAuth/Authorize	
+ - REDIRCT URI: https://localhost:44301/AzureADAuth/Authorize
+ - LOGOUT URL: https://localhost:44301/Home/Index
  - SUPPORTED ACCOUNT TYPES: "Accounts in this organizational directory only"
  - IMPLICIT GRANT: Do not enable any Implicit Grant options
  - API PERMISSIONS: **Files.Read.All** and **User.Read**
@@ -59,8 +60,6 @@ To run this code sample, the following are required.
 ## Known issues
 
 * The Fabric spinner control appears only briefly or not at all. 
-
-* After you logout in the task pane, you will briefly see, in the task pane, and error page that says that it cannot be opened in an iFrame. This will be fixed. Just close the task pane by clicking the "X" in the upper right.
 
 * Scenario: When trying to run the code sample, the add-in will not load.
 	* Resolution: 
