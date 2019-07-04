@@ -17,7 +17,7 @@ namespace OutlookAddinMicrosoftGraphASPNET.Controllers
         // The URL that auth should redirect to after a successful login.
         Uri loginRedirectUri => new Uri(Url.Action(nameof(Authorize), "AzureADAuth", null, Request.Url.Scheme));
 
-        // The URL to redirect to after a logout.
+        // The URL to redirect to after a logout. The add-in's home page.
         Uri logoutRedirectUri => new Uri(Url.Action(nameof(HomeController.Index), "Home", null, Request.Url.Scheme));
 
         /// <summary>
@@ -30,6 +30,14 @@ namespace OutlookAddinMicrosoftGraphASPNET.Controllers
             Data.DeleteUserSessionToken(userAuthStateId, Settings.AzureADAuthority);
             Response.Cookies.Clear();
 
+            // The logoutRedirectUri (which is the add-in's home page) must also be specified 
+            // as the Logout URL when registering the add-in with Azure AD. If this is not done,
+            // then the initial "Hang on a moment while we sign you out" page can't be in an iframe. 
+            // In Outlook Online, the task pane is an iframe. That would require that the add -in 
+            // open a dialog (and call this action method from the dialog) just to logout. This 
+            // sample registers the Logout URL, so AAD will allow the initial logout page to 
+            // open in the iframe (task pane) and then redirect to the Logout URL. So this 
+            // action method can be called from the task pane.
             return Redirect(Settings.AzureADLogoutAuthority + logoutRedirectUri.ToString());
         }
 
