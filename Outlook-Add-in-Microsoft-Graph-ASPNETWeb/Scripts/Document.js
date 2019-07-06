@@ -23,11 +23,14 @@ function getFileNamesFromGraph() {
         type: "GET"
     })
         .done(function (result) {
-            writeFileNamesToMessage(result);
-        })
-        .then(function () {
-            $("#waitContainer").hide();
-            $("#finishedContainer").show();
+            writeFileNamesToMessage(result)        
+            .then(function () {
+                $("#waitContainer").hide();
+                $("#finishedContainer").show();
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
         })
         .fail(function (result) {
             throw("Cannot get data from MS Graph: " + result);
@@ -35,48 +38,59 @@ function getFileNamesFromGraph() {
 }
 
 function writeFileNamesToMessage(graphData) {
-    Office.context.mailbox.item.body.getTypeAsync(
-        function (result) {
-            if (result.status === Office.AsyncResultStatus.Failed) {
-                console.log(result.error.message);
-            }
-            else {
-                // Successfully got the type of item body.
-                if (result.value === Office.MailboxEnums.BodyType.Html) {
 
-                    // Body is of type HTML.
-                    var htmlContent = createHtmlContent(graphData);
+    // Office.Promise is an alias of OfficeExtension.Promise. Only the alias
+    // can be used in an Outlook add-in.
+    return new Office.Promise(function (resolve, reject) {
+        try {
+            Office.context.mailbox.item.body.getTypeAsync(
+                function (result) {
+                    if (result.status === Office.AsyncResultStatus.Failed) {
+                        console.log(result.error.message);
+                    }
+                    else {
+                        // Successfully got the type of item body.
+                        if (result.value === Office.MailboxEnums.BodyType.Html) {
 
-                    Office.context.mailbox.item.body.setSelectedDataAsync(
-                        htmlContent, { coercionType: Office.CoercionType.Html },
-                        function (asyncResult) {
-                            if (asyncResult.status ===
-                                Office.AsyncResultStatus.Failed) {
-                                console.log(asyncResult.error.message);
-                            }
-                            else {
-                                console.log("Successfully set HTML data in item body.");
-                            }
-                        });
-                }
-                else {
-                    // Body is of type text. 
-                    var textContent = createTextContent(graphData);
+                            // Body is of type HTML.
+                            var htmlContent = createHtmlContent(graphData);
 
-                    Office.context.mailbox.item.body.setSelectedDataAsync(
-                        textContent, { coercionType: Office.CoercionType.Text },
-                        function (asyncResult) {
-                            if (asyncResult.status ===
-                                Office.AsyncResultStatus.Failed) {
-                                console.log(asyncResult.error.message);
-                            }
-                            else {
-                                console.log("Successfully set text data in item body.");
-                            }
-                        });
-                }
-            }
-        });
+                            Office.context.mailbox.item.body.setSelectedDataAsync(
+                                htmlContent, { coercionType: Office.CoercionType.Html },
+                                function (asyncResult) {
+                                    if (asyncResult.status ===
+                                        Office.AsyncResultStatus.Failed) {
+                                        console.log(asyncResult.error.message);
+                                    }
+                                    else {
+                                        console.log("Successfully set HTML data in item body.");
+                                    }
+                                });
+                        }
+                        else {
+                            // Body is of type text. 
+                            var textContent = createTextContent(graphData);
+
+                            Office.context.mailbox.item.body.setSelectedDataAsync(
+                                textContent, { coercionType: Office.CoercionType.Text },
+                                function (asyncResult) {
+                                    if (asyncResult.status ===
+                                        Office.AsyncResultStatus.Failed) {
+                                        console.log(asyncResult.error.message);
+                                    }
+                                    else {
+                                        console.log("Successfully set text data in item body.");
+                                    }
+                                });
+                        }
+                    }
+                });
+            resolve();
+        }
+        catch (error) {
+            reject(Error("Unable to add filenames to document. " + error));
+        }
+    });
 }
 
 function createHtmlContent(data) {
