@@ -45,17 +45,39 @@ To run this code sample, the following are required.
 	 
 3.  In web.config, use the values that you copied in the previous step. Set **AAD:ClientID** to your client id, set **AAD:ClientSecret** to your client secret, and set **"AAD:O365TenantID"** to your tenant ID. 
 
-## Run the project
+## Run the project with desktop Outlook
+
 1. Open the Visual Studio solution file. 
 2. Right-click **Outlook-Add-in-Microsoft-Graph-ASPNET** solution in **Solution Explorer** (not the project nodes), and then choose **Set startup projects**. Select the **Multiple startup projects** radio button. Make sure the project that ends with "Web" is listed first.
 3. On the **Build** menu, select **Clean Solution**. When it finishes, open the **Build** menu again and select **Build Solution**.
-4. Press F5. The first time you do this, you will be prompted to specify the email and password fo the Outlook for Web user that you will use for debugging the add-in. Use the credentials of an admin for your O365 tenancy.
-5. Outlook for Web will open in a browser window. In Outlook, click **New** to create a new email message. 
-6. Below the compose form is a tool bar with buttons for **Send**, **Discard**, and other utilities. If you are logged in with a Work or School account, the icon for the add-in is near the far right end of this tool bar, near to the right end of the window. If you are logged in with a Microsoft Account, the icon is on a drop down menu that opens when you click the **...* button on this tool bar.
+4. In **Solution Explorer**, select the **Outlook-Add-in-Microsoft-Graph-ASPNET** project node (not the top solution node and not the project whose name ends in "Web").
+5. In the **Properties** pane, open the **Start Action** drop down and choose whether to run the add-in in desktop Outlook or with Outlook on the web in one of the listed browsers.).
 
-   ![Icon for Insert Files Add-in](Outlook-Add-in-Microsoft-Graph-ASPNETWeb/Content/Onedrive_Charts_icon_16x16px.png)
+    ![Choose the desired Oulook host: desktop or one of the browsers](images/StartAction.JPG)
 
-7. Click the icon to open the task pane add-in.
+6. Press F5. The first time you do this, you will be prompted to specify the email and password of the user that you will use for debugging the add-in. Use the credentials of an admin for your O365 tenancy. (If you are running with desktop Outlook, it is *not* necessary that this user has an account in Outlook.)
+
+    ![Form with text boxes for user's email and password](images/CredentialsPrompt.JPG)
+
+>!NOTE: If you chose to run the add-in in Office on the web, the browser may ask you to login again.
+
+The remaining steps depend on whether you are running the add-in in desktop Outlook or Outlook on the web.
+
+### Run the project with Outlook on the web
+
+1. Outlook for Web will open in a browser window. In Outlook, click **New** to create a new email message. 
+2. Below the compose form is a tool bar with buttons for **Send**, **Discard**, and other utilities. If you are logged in with a Work or School account, the icon for the add-in is near the far right end of this tool bar, near to the right end of the window. If you are logged in with a Microsoft Account, the icon is on a drop down menu that opens when you click the **...* button on this tool bar.
+
+   ![Icon for Insert Files Add-in](images/Onedrive_Charts_icon_16x16px.png)
+
+3. Click the icon to open the task pane add-in.
+4. Use the add-in to add the names of the first three workbooks in the user's OneDrive account to the message. The pages and buttons of the add-in are self-explanatory.
+
+## Run the project with desktop Outlook
+
+1. Desktop Outlook will open. In Outlook, click **New Email** to create a new email message. 
+2. On the **Message** ribbon of the **Message** form, there is a button labelled **Open Add-in** in a group called **OneDrive Files**. Click the button to open the add-in.
+3. Use the add-in to add the names of the first three workbooks in the user's OneDrive account to the message. The pages and buttons of the add-in are self-explanatory.
 
 ## Known issues
 
