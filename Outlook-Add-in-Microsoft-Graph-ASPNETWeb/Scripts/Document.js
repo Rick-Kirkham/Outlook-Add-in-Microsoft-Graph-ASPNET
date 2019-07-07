@@ -2,14 +2,14 @@
 
 "use strict";
 
+let dialog;
+
 Office.initialize = function () {
     $(document).ready(function () {
         app.initialize();
 
         $("#getOneDriveFilesButton").click(getFileNamesFromGraph);
-        $("#logoutO365PopupButton").click(function () {
-            window.location.href = "/azureadauth/logout";
-        });        
+        $("#logoutO365PopupButton").click(logout);        
     });
 };
 
@@ -22,95 +22,108 @@ function getFileNamesFromGraph() {
         url: "/files/onedrivefiles",
         type: "GET"
     })
-        .done(function (result) {
-            writeFileNamesToMessage(result)        
+    .done(function (result) {
+        writeFileNamesToOfficeDocument(result)
             .then(function () {
                 $("#waitContainer").hide();
                 $("#finishedContainer").show();
             })
             .catch(function (error) {
-                console.log(error);
+                app.showNotification(error.toString());
             });
-        })
+    })
         .fail(function (result) {
-            throw("Cannot get data from MS Graph: " + result);
-        });
-}
-
-function writeFileNamesToMessage(graphData) {
-
-    // Office.Promise is an alias of OfficeExtension.Promise. Only the alias
-    // can be used in an Outlook add-in.
-    return new Office.Promise(function (resolve, reject) {
-        try {
-            Office.context.mailbox.item.body.getTypeAsync(
-                function (result) {
-                    if (result.status === Office.AsyncResultStatus.Failed) {
-                        console.log(result.error.message);
-                    }
-                    else {
-                        // Successfully got the type of item body.
-                        if (result.value === Office.MailboxEnums.BodyType.Html) {
-
-                            // Body is of type HTML.
-                            var htmlContent = createHtmlContent(graphData);
-
-                            Office.context.mailbox.item.body.setSelectedDataAsync(
-                                htmlContent, { coercionType: Office.CoercionType.Html },
-                                function (asyncResult) {
-                                    if (asyncResult.status ===
-                                        Office.AsyncResultStatus.Failed) {
-                                        console.log(asyncResult.error.message);
-                                    }
-                                    else {
-                                        console.log("Successfully set HTML data in item body.");
-                                    }
-                                });
-                        }
-                        else {
-                            // Body is of type text. 
-                            var textContent = createTextContent(graphData);
-
-                            Office.context.mailbox.item.body.setSelectedDataAsync(
-                                textContent, { coercionType: Office.CoercionType.Text },
-                                function (asyncResult) {
-                                    if (asyncResult.status ===
-                                        Office.AsyncResultStatus.Failed) {
-                                        console.log(asyncResult.error.message);
-                                    }
-                                    else {
-                                        console.log("Successfully set text data in item body.");
-                                    }
-                                });
-                        }
-                    }
-                });
-            resolve();
-        }
-        catch (error) {
-            reject(Error("Unable to add filenames to document. " + error));
-        }
+            app.showNotification("Cannot get data from MS Graph: " + result.toString());
     });
 }
 
-function createHtmlContent(data) {
+function writeFileNamesToOfficeDocument(result) {
 
-    var bodyContent = "<html><head></head><body>";
-
-    for (var i = 0; i < data.length; i++) {
-        bodyContent += "<p>" + data[i] + "</p>";
-    }
-    bodyContent += "</body></html >";
-
-    return bodyContent;
+    return new Office.Promise(function (resolve, reject) {
+        try {
+            switch (Office.context.host) {
+                case "Excel":
+                    writeFileNamesToWorksheet(result);
+                    break;
+                case "Word":
+                    writeFileNamesToDocument(result);
+                    break;
+                case "PowerPoint":
+                    writeFileNamesToPresentation(result);
+                    break;
+                default:
+                    throw "Unsupported Office host application: This add-in only runs on Excel, PowerPoint, or Word.";
+            }
+            resolve();
+        }
+        catch (error) {
+            reject(Error("Unable to add filenames to document. " + error.toString()));
+        }
+    });    
 }
 
-function createTextContent(data) {
+function writeFileNamesToWorksheet(result) {
+    
+     return Excel.run(function (context) {
+        const sheet = context.workbook.worksheets.getActiveWorksheet();
 
-    var bodyContent = "";
-    for (var i = 0; i < data.length; i++) {
-        bodyContent += data[i] + "\n";
+        const data = [
+             [result[0]],
+             [result[1]],
+             [result[2]]];
+
+        const range = sheet.getRange("B5:B7");
+        range.values = data;
+        range.format.autofitColumns();
+
+        return context.sync();
+    });
+}
+
+function writeFileNamesToDocument(result) {
+
+     return Word.run(function (context) {
+
+        const documentBody = context.document.body;
+        for (let i = 0; i < result.length; i++) {
+            documentBody.insertParagraph(result[i], "End");
+        }
+
+        return context.sync();
+    });
+}
+
+function writeFileNamesToPresentation(result) {
+
+    const fileNames = result[0] + '\n' + result[1] + '\n' + result[2];
+
+    Office.context.document.setSelectedDataAsync(
+        fileNames,
+        function (asyncResult) {
+            if (asyncResult.status === Office.AsyncResultStatus.Failed) {
+                throw asyncResult.error.message;
+            }
+        }
+    );
+}
+
+function logout() {
+
+    Office.context.ui.displayDialogAsync('https://localhost:44301/azureadauth/logout',
+        { height: 30, width: 30 }, function (result) {           
+            dialog = result.value;
+            dialog.addEventHandler(Microsoft.Office.WebExtension.EventType.DialogMessageReceived, processLogoutMessage);
+        });
+}
+
+function processLogoutMessage(messageFromLogoutDialog) {
+
+    if (messageFromLogoutDialog.message === "success") {
+        dialog.close();
+        document.location.href = "/home/index";
     }
-
-    return bodyContent;
+    else {
+        dialog.close();
+        app.showNotification("Not able to logout: " + messageFromLogoutDialog.toString());
+    }
 }

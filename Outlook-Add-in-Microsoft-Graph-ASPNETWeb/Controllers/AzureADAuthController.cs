@@ -17,28 +17,19 @@ namespace OutlookAddinMicrosoftGraphASPNET.Controllers
         // The URL that auth should redirect to after a successful login.
         Uri loginRedirectUri => new Uri(Url.Action(nameof(Authorize), "AzureADAuth", null, Request.Url.Scheme));
 
-        // The URL to redirect to after a logout. The add-in's home page.
+        // The URL to redirect to after a logout. It is the add-in's home page.
         Uri logoutRedirectUri => new Uri(Url.Action(nameof(HomeController.Index), "Home", null, Request.Url.Scheme));
 
         /// <summary>
         /// Logs the user out.
         /// </summary>
-        /// <returns>Redirect to Azure logout.</returns>
+        /// <returns>Redirect to logout complete page.</returns>
         public ActionResult Logout()
         {
             var userAuthStateId = Settings.GetUserAuthStateId(ControllerContext.HttpContext);
             Data.DeleteUserSessionToken(userAuthStateId, Settings.AzureADAuthority);
             Response.Cookies.Clear();
-
-            // The logoutRedirectUri (which is the add-in's home page) must also be specified 
-            // as the Logout URL when registering the add-in with Azure AD. If this is not done,
-            // then the initial "Hang on a moment while we sign you out" page can't be in an iframe. 
-            // In Outlook Online, the task pane is an iframe. That would require that the add -in 
-            // open a dialog (and call this action method from the dialog) just to logout. This 
-            // sample registers the Logout URL, so AAD will allow the initial logout page to 
-            // open in the iframe (task pane) and then redirect to the Logout URL. So this 
-            // action method can be called from the task pane.
-            return Redirect(Settings.AzureADLogoutAuthority + logoutRedirectUri.ToString());
+            return RedirectToAction("LogoutComplete");
         }
 
         /// <summary>
@@ -67,7 +58,6 @@ namespace OutlookAddinMicrosoftGraphASPNET.Controllers
            
             // Redirect the browser to the login page, then come back to the Authorize method below.
             return Redirect(authUrl.ToString());
-
         }
 
         /// <summary>
@@ -75,19 +65,18 @@ namespace OutlookAddinMicrosoftGraphASPNET.Controllers
         /// the Authorization Code flow of OAuth.
         /// </summary>
         /// <returns>The default view.</returns>
-        public async Task<ActionResult> Authorize()        {
+        public async Task<ActionResult> Authorize() {
 
             ConfidentialClientApplicationBuilder clientBuilder = ConfidentialClientApplicationBuilder.Create(Settings.AzureADClientId);
             clientBuilder.WithClientSecret(Settings.AzureADClientSecret);
             clientBuilder.WithRedirectUri(loginRedirectUri.ToString());
             clientBuilder.WithAuthority(Settings.AzureADAuthority);
+
             ConfidentialClientApplication clientApp = (ConfidentialClientApplication)clientBuilder.Build();
-
             string[] graphScopes = { "Files.Read.All", "User.Read" };
-
-
             var authStateString = Request.QueryString["state"];
             var authState = JsonConvert.DeserializeObject<AuthState>(authStateString);
+
             try
             {
                 // Get and save the token.
@@ -97,11 +86,8 @@ namespace OutlookAddinMicrosoftGraphASPNET.Controllers
                 );
 
                 var authResult = await authResultBuilder.ExecuteAsync();
-
                 await SaveAuthToken(authState, authResult);
-
                 authState.authStatus = "success";
-
             }
             catch (Exception ex)
             {
@@ -114,7 +100,6 @@ namespace OutlookAddinMicrosoftGraphASPNET.Controllers
             var redirectUrl = Url.Action(nameof(AuthorizeComplete), new { authState = JsonConvert.SerializeObject(authState) });
             ViewBag.redirectUrl = redirectUrl;
             return View();
-
         }
 
         /// <summary>
@@ -129,7 +114,9 @@ namespace OutlookAddinMicrosoftGraphASPNET.Controllers
             string username = null;
             var userNameClaim = idToken.Claims.FirstOrDefault(x => x.Type == "preferred_username");
             if (userNameClaim != null)
+            {
                 username = userNameClaim.Value;
+            }
 
             using (var db = new AddInContext())
             {
@@ -151,10 +138,19 @@ namespace OutlookAddinMicrosoftGraphASPNET.Controllers
         /// and authorization of the web application are finished. 
         /// </summary>
         /// <param name="authState">The login or out status of the user.</param>
-        /// <returns>The default view.</returns>
+        /// <returns>The default view for AuthorizeComplete.</returns>
         public ActionResult AuthorizeComplete(string authState)
         {
             ViewBag.AuthState = authState;
+            return View();
+        }
+
+        /// <summary>
+        /// Changes the view in the pop-up to tell the user that logout is complete. 
+        /// </summary>
+        /// <returns>The default view for LogoutComplete.</returns>
+        public ActionResult LogoutComplete()
+        {           
             return View();
         }
     }
