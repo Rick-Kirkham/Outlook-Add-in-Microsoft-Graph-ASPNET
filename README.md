@@ -1,8 +1,10 @@
 # Get Excel workbooks using Microsoft Graph and MSAL in an Outlook Add-in 
 
+## Summary
+
 Learn how to build a Microsoft Outlook Add-in that connects to Microsoft Graph, finds the first three workbooks stored in OneDrive for Business, fetches their filenames, and inserts the names into a new message compose form in Outlook.
 
-# Introduction
+# Features
 
 Integrating data from online service providers increases the value and adoption of your add-ins. This code sample shows you how to connect your Outlook add-in to Microsoft Graph. Use this code sample to:
 
@@ -12,8 +14,12 @@ Integrating data from online service providers increases the value and adoption 
 * Show a dialog using the Office UI namespace.
 * Build an Add-in using ASP.NET MVC, MSAL 3.x.x for .NET,  and Office.js. 
 
+## Applies to
+
+-  Outlook on all platforms
 
 ## Prerequisites
+
 To run this code sample, the following are required.
 
 * Visual Studio 2019 or later.
@@ -29,7 +35,27 @@ To run this code sample, the following are required.
 
 * A Microsoft Azure Tenant. This add-in requires Azure Active Directiory (AD). Azure AD provides identity services that applications use for authentication and authorization. A trial subscription can be acquired here: [Microsoft Azure](https://account.windowsazure.com/SignUp).
 
-## Configure the project
+## Solution
+
+Solution | Author(s)
+---------|----------
+Outlook Add-in Microsoft Graph ASP.NET | Microsoft
+
+## Version history
+
+Version  | Date | Comments
+---------| -----| --------
+1.0  | July 8th, 2019| Initial release
+
+## Disclaimer
+
+**THIS CODE IS PROVIDED *AS IS* WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.**
+
+----------
+
+## Build and run the solution
+
+## Configure the solution
 
 1. In **Visual Studio**, choose the **Outlook-Add-in-Microsoft-Graph-ASPNETWeb** project. In **Properties**, ensure **SSL Enabled** is **True**. Verify that the **SSL URL** uses the same domain name and port number as those listed in the next step.
  
@@ -44,7 +70,7 @@ To run this code sample, the following are required.
 	 
 3.  In web.config, use the values that you copied in the previous step. Set **AAD:ClientID** to your client id, set **AAD:ClientSecret** to your client secret, and set **"AAD:O365TenantID"** to your tenant ID. 
 
-## Run the project with desktop Outlook
+## Run the solution
 
 1. Open the Visual Studio solution file. 
 2. Right-click **Outlook-Add-in-Microsoft-Graph-ASPNET** solution in **Solution Explorer** (not the project nodes), and then choose **Set startup projects**. Select the **Multiple startup projects** radio button. Make sure the project that ends with "Web" is listed first.
@@ -58,11 +84,11 @@ To run this code sample, the following are required.
 
     ![Form with text boxes for user's email and password](images/CredentialsPrompt.JPG)
 
->!NOTE: The browser will open to the login page for Office on the web. (So, if this is the first time you have run the add-in, you will enter the username and password twice.) 
+    >NOTE: The browser will open to the login page for Office on the web. (So, if this is the first time you have run the add-in, you will enter the username and password twice.) 
 
 The remaining steps depend on whether you are running the add-in in desktop Outlook or Outlook on the web.
 
-### Run the project with Outlook on the web
+### Run the solution with Outlook on the web
 
 1. Outlook for Web will open in a browser window. In Outlook, click **New** to create a new email message. 
 2. Below the compose form is a tool bar with buttons for **Send**, **Discard**, and other utilities. If you are logged in with a Work or School account, the icon for the add-in is near the far right end of this tool bar, near to the right end of the window. If you are logged in with a Microsoft Account, the icon is on a drop down menu that opens when you click the **...** button on this tool bar.
@@ -82,24 +108,20 @@ The remaining steps depend on whether you are running the add-in in desktop Outl
 
 * The Fabric spinner control appears only briefly or not at all. 
 * If you are running in Internet Explorer, you will receive an error when you try to login that says you must put `https://localhost:44301` and `https://outlook.office.com` (or `https://outlook.office365.com`) in the same security zone. But this error occurs even if you have done that. 
-* Scenario: When you run the code sample, you get an error on the line *Office.context.ui.messageParent*.	
-	* Resolution: Stop running the code sample and restart it. 
-* If download the zip file, when you extract the files you get an error indicating that the file path is too long.
-	* Resolution: Unzip your files to a folder directly under the root (e.g. c:\sample).
 
 ## Questions and comments
+
 We'd love to get your feedback about the *Get Excel workbooks using Microsoft Graph and MSAL in an Office Add-in* sample. You can send your feedback to us in the *Issues* section of this repository.
 Questions about Office 365 development in general should be posted to [Stack Overflow](http://stackoverflow.com/questions/tagged/Office365+API). Ensure your questions are tagged with [office-js], [MicrosoftGraph] and [API].
 
 ## Additional resources
 
-* [Microsoft Graph (Excel) ToDo code sample](https://github.com/OfficeDev/Microsoft-Graph-ASPNET-ExcelREST-ToDo)
 * [Microsoft Graph documentation](https://docs.microsoft.com/graph/)
 * [Office Add-ins documentation](https://docs.microsoft.com/office/dev/add-ins/overview/office-add-inss)
 
 ## Copyright
 Copyright (c) 2019 Microsoft Corporation. All rights reserved.
 
-
-
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information, see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+
+<img src="https://telemetry.sharepointpnp.com/officedev/samples/readme-template" />
