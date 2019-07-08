@@ -36,7 +36,6 @@ To run this code sample, the following are required.
 2. Register your application using the [Azure Management Portal](https://manage.windowsazure.com). **Log in with the identity of an administrator of your Office 365 tenancy to ensure that you are working in an Azure Active Directory that is associated with that tenancy.** To learn how to register your application, see [Register an application with the Microsoft Identity Platform](https://docs.microsoft.com/graph/auth-register-app-v2). Use the following settings:
 
  - REDIRCT URI: https://localhost:44301/AzureADAuth/Authorize
- - LOGOUT URL: https://localhost:44301/Home/Index
  - SUPPORTED ACCOUNT TYPES: "Accounts in this organizational directory only"
  - IMPLICIT GRANT: Do not enable any Implicit Grant options
  - API PERMISSIONS: **Files.Read.All** and **User.Read**
@@ -51,22 +50,22 @@ To run this code sample, the following are required.
 2. Right-click **Outlook-Add-in-Microsoft-Graph-ASPNET** solution in **Solution Explorer** (not the project nodes), and then choose **Set startup projects**. Select the **Multiple startup projects** radio button. Make sure the project that ends with "Web" is listed first.
 3. On the **Build** menu, select **Clean Solution**. When it finishes, open the **Build** menu again and select **Build Solution**.
 4. In **Solution Explorer**, select the **Outlook-Add-in-Microsoft-Graph-ASPNET** project node (not the top solution node and not the project whose name ends in "Web").
-5. In the **Properties** pane, open the **Start Action** drop down and choose whether to run the add-in in desktop Outlook or with Outlook on the web in one of the listed browsers.).
+5. In the **Properties** pane, open the **Start Action** drop down and choose whether to run the add-in in desktop Outlook or with Outlook on the web in one of the listed browsers. (*Do not choose Internet Explorer. See **Known Issues** below for why.*) 
 
     ![Choose the desired Oulook host: desktop or one of the browsers](images/StartAction.JPG)
 
-6. Press F5. The first time you do this, you will be prompted to specify the email and password of the user that you will use for debugging the add-in. Use the credentials of an admin for your O365 tenancy. (If you are running with desktop Outlook, it is *not* necessary that this user has an account in Outlook.)
+6. Press F5. The first time you do this, you will be prompted to specify the email and password of the user that you will use for debugging the add-in. Use the credentials of an admin for your O365 tenancy. 
 
     ![Form with text boxes for user's email and password](images/CredentialsPrompt.JPG)
 
->!NOTE: If you chose to run the add-in in Office on the web, the browser may ask you to login again.
+>!NOTE: The browser will open to the login page for Office on the web. (So, if this is the first time you have run the add-in, you will enter the username and password twice.) 
 
 The remaining steps depend on whether you are running the add-in in desktop Outlook or Outlook on the web.
 
 ### Run the project with Outlook on the web
 
 1. Outlook for Web will open in a browser window. In Outlook, click **New** to create a new email message. 
-2. Below the compose form is a tool bar with buttons for **Send**, **Discard**, and other utilities. If you are logged in with a Work or School account, the icon for the add-in is near the far right end of this tool bar, near to the right end of the window. If you are logged in with a Microsoft Account, the icon is on a drop down menu that opens when you click the **...* button on this tool bar.
+2. Below the compose form is a tool bar with buttons for **Send**, **Discard**, and other utilities. If you are logged in with a Work or School account, the icon for the add-in is near the far right end of this tool bar, near to the right end of the window. If you are logged in with a Microsoft Account, the icon is on a drop down menu that opens when you click the **...** button on this tool bar.
 
    ![Icon for Insert Files Add-in](images/Onedrive_Charts_icon_16x16px.png)
 
@@ -82,12 +81,7 @@ The remaining steps depend on whether you are running the add-in in desktop Outl
 ## Known issues
 
 * The Fabric spinner control appears only briefly or not at all. 
-
-* Scenario: When trying to run the code sample, the add-in will not load.
-	* Resolution: 
-		1. In Visual Studio, open **SQL Server Object Explorer**.
-		2. Expand **(localdb)\MSSQLLocalDB** > **Databases**.
-		3. Right click **Outlook-Add-in-Microsoft-Graph-ASPNET**, then choose **Delete**. 
+* If you are running in Internet Explorer, you will receive an error when you try to login that says you must put `https://localhost:44301` and `https://outlook.office.com` (or `https://outlook.office365.com`) in the same security zone. But this error occurs even if you have done that. 
 * Scenario: When you run the code sample, you get an error on the line *Office.context.ui.messageParent*.	
 	* Resolution: Stop running the code sample and restart it. 
 * If download the zip file, when you extract the files you get an error indicating that the file path is too long.
