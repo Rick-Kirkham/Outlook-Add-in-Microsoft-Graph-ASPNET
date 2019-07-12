@@ -23,7 +23,7 @@ function getFileNamesFromGraph() {
         type: "GET"
     })
     .done(function (result) {
-        writeFileNamesToOfficeMessage(result)
+        writeFileNamesToMessage(result)
             .then(function () {
                 $("#waitContainer").hide();
                 $("#finishedContainer").show();
